@@ -8,7 +8,7 @@ CENTRE_X = WIDTH / 2
 CENTRE_Y = HEIGHT / 2
 CENTRE = (CENTRE_X, CENTRE_Y)
 FINAL_LEVEL = 6
-START_SPEED = 10
+START_SPEED = 5
 ITEMS = ["battery", "chips", "plastic bottle", "pbag", "bottle"]
 
 game_over = False
@@ -51,7 +51,7 @@ def get_option_to_create(number_of_extra_items):
 def create_items(items_to_create):
     new_items = []
     for option in items_to_create:
-        item = Actor(option + "img")
+        item = Actor(option)
         new_items.append(item)
     return new_items
 
@@ -79,8 +79,28 @@ def on_mouse_down(pos):
     global items, current_level
     for item in items:
         if item.collidepoint(pos):
-            if "paper" in item.image:
+            if "pbag" in item.image:
                 handle_game_complete()
             else:
                 handle_game_over()
 
+def handle_game_complete():
+    global current_level, items, animations, game_complete
+    stop_animations(animations)
+    if current_level == FINAL_LEVEL:
+        game_complete = True
+    else:
+        current_level += 1
+        items = []
+        animations = []
+
+def stop_animations(animations_to_stop):
+    for animation in animations_to_stop:
+        if animation.running:
+            animation.stop()
+
+def display_message(heading_text, sub_heading_text):
+    screen.draw.text(heading_text, fontsize=60, center=CENTRE, color="white")
+    screen.draw.text(sub_heading_text, fontsize=30, center=(CENTRE_X, CENTRE_Y + 30), color="white")
+
+pgzrun.go()
